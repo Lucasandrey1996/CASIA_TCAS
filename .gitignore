@@ -1,3 +1,8 @@
+# Dossiers exclus du dépôt (uniquement le programme)
+0_Admin/
+1_Documentation/
+2_Program/0_Data/
+
 # Environnement Python
 .venv/
 venv/
@@ -11,25 +16,17 @@ __pycache__/
 .eggs/
 dist/
 build/
-*.egg
 
 # IDE / Éditeur
 .idea/
 .vscode/
-.cursor/
 *.swp
 *.swo
 
-# OS
-.DS_Store
-Thumbs.db
+# Cursor (hors programme)
+.cursor/
 
-# Projet CAS - Exclusions spécifiques
-0_Admin/
-1_Documentation/
-2_Program/0_Data/
-
-# Secrets et config locale
-.env
-.env.local
-*.local
+# Données et fichiers sensibles
+*.env
+.env.*
+*.log
