@@ -1,0 +1,2 @@
+# TCas - Dépendances Python
+# Activer l'environnement : .venv\Scripts\activate (Windows)

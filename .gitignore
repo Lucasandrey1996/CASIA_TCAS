@@ -1,0 +1,35 @@
+# Environnement Python
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+*.egg
+
+# IDE / Éditeur
+.idea/
+.vscode/
+.cursor/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Projet CAS - Exclusions spécifiques
+0_Admin/
+1_Documentation/
+2_Program/0_Data/
+
+# Secrets et config locale
+.env
+.env.local
+*.local
