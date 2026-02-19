@@ -1,0 +1,4 @@
+Commande sur CS8:
+
+psql -c "\copy (SELECT techant.pkey as ref_techant, objet.pkey AS ref_obj, ouvrage.libelle AS ouvrage, champ.libelle AS champ, objet.libelle AS libelle_1, objet.libelle1 AS libelle_2, freqmemo.libelle AS fréquence FROM techant, ouvrage, champ, objet, freqmemo WHERE techant.ref_ouvrage=ouvrage.pkey and techant.ref_obj=objet.pkey and objet.pkey_tranche=champ.pkey and techant.ref_freqmemo=freqmemo.pkey ORDER BY techant.ref_ouvrage) TO '/usr1/LYNX/client/sami8/FICHIER/extraction_techant.csv' With CSV DELIMITER ';' HEADER;" lynxdb
+
