@@ -1,4 +1,9 @@
+#!/bin/bash
 # --- Script configuration ---
+# ExpArchiV5.1 : limite 5000 lignes, temporisation entre requêtes PSQL
+
+CONFIG_MAX_LINES=5000
+PSQL_DELAY_SEC=0.05  # 50 ms entre chaque requête PSQL
 
 # Check for a valid number of arguments
 if [ "$#" -lt 2 ] || [ "$#" -gt 3 ]; then
@@ -34,15 +39,22 @@ if [[ ! -d "$OUTPUT_DIR" ]]; then
   exit 1
 fi
 
+# Check config file line count (header + data)
+CONFIG_LINES=$(wc -l < "$CONFIG_FILE")
+DATA_LINES=$((CONFIG_LINES - 1))
+if [[ $DATA_LINES -gt $CONFIG_MAX_LINES ]]; then
+  echo "Warning: Config has $DATA_LINES lines. Limiting to $CONFIG_MAX_LINES lines."
+fi
+
 # --- Script Logic ---
 
 # Get the current timestamp for the output filenames
 TIMESTAMP=$(date '+%Y%m%d')
 
-echo "Start extracting configuration from $CONFIG_FILE."
+echo "Start extracting configuration from $CONFIG_FILE (max $CONFIG_MAX_LINES lines, delay ${PSQL_DELAY_SEC}s between queries)."
 
-# Loop to process each line of the configuration file
-tail -n +2 "$CONFIG_FILE" | while IFS=';' read -r nom table nbr rest; do
+# Loop to process each line of the configuration file (limited to CONFIG_MAX_LINES)
+tail -n +2 "$CONFIG_FILE" | head -n "$CONFIG_MAX_LINES" | while IFS=';' read -r nom table nbr rest; do
   # Trim whitespace from variables
   nom=$(echo "$nom" | xargs)
   table=$(echo "$table" | xargs)
@@ -74,6 +86,9 @@ tail -n +2 "$CONFIG_FILE" | while IFS=';' read -r nom table nbr rest; do
   else
     echo "Error: export failed for table '$table'."
   fi
+
+  # Temporisation pour éviter de surcharger la base
+  sleep "$PSQL_DELAY_SEC"
 done
 
 echo "All tables have been processed."
