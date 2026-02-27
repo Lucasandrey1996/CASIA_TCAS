@@ -1,0 +1,6 @@
+# Scripts shell : fins de ligne Unix (LF) pour exécution sur Linux
+ExpArchiV5.sh text eol=lf
+ExpArchiV6.sh text eol=lf
+ExpArchiV7.sh text eol=lf
+ExpArchiV7.1.sh text eol=lf
+config_export_controlCAD.csv text eol=lf

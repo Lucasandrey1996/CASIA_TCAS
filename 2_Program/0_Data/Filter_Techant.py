@@ -1,7 +1,9 @@
 """
-Génère config_export_controlCAD.csv à partir des points de transmission CAD
-et de la liste des techant, en appliquant les filtres définis.
+Génère des fichiers config_export_{suffix}_controlCAD.csv (un par type de donnée)
+à partir des points de transmission CAD et de la liste des techant.
 """
+
+from collections import defaultdict
 
 import pandas as pd
 from pathlib import Path
@@ -15,17 +17,20 @@ except ImportError:
 BASE_DIR = Path(__file__).resolve().parent
 EXCEL_PATH = BASE_DIR / "0_Raw" / "RefFiles" / "Point_transmission_CAD_20260202.xlsx"
 TECHANT_PATH = BASE_DIR / "0_Raw" / "liste_techant" / "20260219_techant.csv"
-OUTPUT_PATH = BASE_DIR / "0_Raw" / "liste_techant" / "config_export_controlCAD.csv"
+OUTPUT_DIR = BASE_DIR / "0_Raw" / "liste_techant"
 
-# Définition des filtres : (champ, libelle_2, frequence, type, is_temperature)
+# Définition des filtres : (champ, libelle_2, frequence, type, suffix)
 # libelle_2=None signifie pas de filtre sur libelle_2
+# suffix : suffixe du Nom en sortie (TempRet, PosVan, PuisCpt, etc.)
 FILTERS = [
-    #("CH1_2B4 SONDE DE TEMPERATURE", None, "15 MINUTES", "Valeur moyenne", True),
-    ("CH1_1C2 COMPTEUR", "TEMPERATURE RETOUR", "15 MINUTES", "Valeur moyenne", True),
-    ("CH1_2Y7 VANNE", None, "15 MINUTES", "Valeur maximum", False),
-    ("CH2_4Y4 VANNE", None, "15 MINUTES", "Valeur maximum", False),
-    ("CH3_5Y4 VANNE", None, "15 MINUTES", "Valeur maximum", False),
-    ("CH4_6Y4 VANNE", None, "15 MINUTES", "Valeur maximum", False),
+    ("CH1_2B4 SONDE DE TEMPERATURE", None, "15 MINUTES", "Valeur moyenne", "TempRet"),
+    ("CH1_2B4 SONDE DE TEMPERATURE COMMUN", None, "15 MINUTES", "Valeur moyenne", "TempRet"),
+    ("CH1_1C2 COMPTEUR", "TEMPERATURE RETOUR", "15 MINUTES", "Valeur moyenne", "TempRet"),
+    ("CH1_1C2 COMPTEUR", "PUISSANCE", "1 MINUTE", "Valeur moyenne", "PuisCpt"),
+    ("CH1_2Y7 VANNE", None, "15 MINUTES", "Valeur maximum", "PosVan"),
+    ("CH2_4Y4 VANNE", None, "15 MINUTES", "Valeur maximum", "PosVan"),
+    ("CH3_5Y4 VANNE", None, "15 MINUTES", "Valeur maximum", "PosVan"),
+    ("CH4_6Y4 VANNE", None, "15 MINUTES", "Valeur maximum", "PosVan"),
 ]
 
 
@@ -55,7 +60,7 @@ def main() -> None:
         frequence = str(row["frequence"]).strip()
         type_val = str(row["type"]).strip()
 
-        for champ_f, libelle_2_f, freq_f, type_f, is_temp in FILTERS:
+        for champ_f, libelle_2_f, freq_f, type_f, suffix in FILTERS:
             if not _champ_matches(champ, champ_f):
                 continue
             if libelle_2_f is not None and libelle_2 != libelle_2_f:
@@ -64,7 +69,7 @@ def main() -> None:
                 continue
             key = (ouvrage, champ_f, libelle_2_f)
             if key not in techant_index:
-                techant_index[key] = (row["ref_techant"], is_temp)
+                techant_index[key] = (row["ref_techant"], suffix)
             break
 
     # Parcours des lignes Excel avec barre de progression
@@ -83,29 +88,38 @@ def main() -> None:
             continue
 
         ouvrage = f"{name_nummer} SST"
-        for champ_f, libelle_2_f, _, _, is_temp in FILTERS:
+        for champ_f, libelle_2_f, _, _, suffix in FILTERS:
             key = (name_nummer, champ_f, libelle_2_f)
             if key in seen:
                 continue
             techant_key = (ouvrage, champ_f, libelle_2_f)
             if techant_key in techant_index:
                 seen.add(key)
-                ref_techant, _ = techant_index[techant_key]
-                suffix = "TempRet" if is_temp else "PosVan"
+                ref_techant, suffix = techant_index[techant_key]
                 results.append({
                     "Nom": f"{name_nummer}_{suffix}",
                     "Table": f"techant{ref_techant}",
                     "nbr": 120,
+                    "_suffix": suffix,
                 })
 
     if not results:
         print("Aucune correspondance trouvée.")
         return
 
-    out_df = pd.DataFrame(results)
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    out_df.to_csv(OUTPUT_PATH, sep=";", index=False)
-    print(f"Fichier généré : {OUTPUT_PATH} ({len(results)} lignes)")
+    # Regroupement par suffix et export d'un fichier par type
+    results_by_suffix = defaultdict(list)
+    for r in results:
+        suffix = r.pop("_suffix")
+        results_by_suffix[suffix].append(r)
+
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    for suffix, suffix_results in results_by_suffix.items():
+        out_path = OUTPUT_DIR / f"config_export_{suffix}_controlCAD.csv"
+        pd.DataFrame(suffix_results).to_csv(
+            out_path, sep=";", index=False, lineterminator="\n"
+        )
+        print(f"Fichier généré : {out_path} ({len(suffix_results)} lignes)")
 
 
 if __name__ == "__main__":

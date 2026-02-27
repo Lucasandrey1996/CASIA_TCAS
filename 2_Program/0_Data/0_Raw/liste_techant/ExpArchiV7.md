@@ -2,6 +2,8 @@
 
 Script d'export et d'archivage de données depuis PostgreSQL. Fusion de **ExpArchiV5.1** (limite de lignes, temporisation) et des **modes 0 et 1** de **ExpArchiV6**.
 
+> **Note** : Pour les identifiants SQL commençant par un chiffre (ex. `1511181_TempRet`), utiliser **ExpArchiV7.1** qui corrige l'erreur de syntaxe PostgreSQL.
+
 ---
 
 ## Synopsis
@@ -100,4 +102,7 @@ Nom;Table;nbr
 
 # Export complet de toutes les tables
 ./ExpArchiV7.sh config_export_controlCAD.csv ./exports 1
+
+# Export complet, config dans le répertoire du script, sortie dans ./ExportData (exécuter depuis 0_Raw/liste_techant/)
+./ExpArchiV7.sh config_export_controlCAD.csv ./ExportData 1
 ```
