@@ -4,6 +4,7 @@
 2_Program/0_Data/0_Raw/ExportSST
 
 # Environnement Python
+2_Program/.venv/
 .venv/
 venv/
 env/
