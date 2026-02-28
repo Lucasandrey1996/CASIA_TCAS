@@ -1,8 +1,10 @@
 # Time Series Forecasting ML - Python 3.13
 # Scikit-learn, XGBoost, TensorFlow/Keras (LSTM)
+# struct&analyse : pandas, pyarrow (parquet)
 
 numpy>=1.21
 pandas>=1.3
+pyarrow>=10.0
 scikit-learn>=1.0
 xgboost>=1.5
 tensorflow>=2.10

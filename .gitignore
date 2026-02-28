@@ -1,6 +1,8 @@
 # Dossiers exclus du dépôt (uniquement le programme)
 0_Admin/
-1_Documentation/
+1_Documentation/0_References/
+1_Documentation/1_DocTechnique/
+1_Documentation/2_Notes/
 2_Program/0_Data/0_Raw/ExportSST
 
 # Environnement Python
