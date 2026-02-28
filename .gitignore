@@ -20,6 +20,7 @@ __pycache__/
 .eggs/
 dist/
 build/
+*.parquet
 
 # IDE / Éditeur
 .idea/
