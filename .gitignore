@@ -21,6 +21,8 @@ __pycache__/
 dist/
 build/
 *.parquet
+*.csv
+*.xlsx
 
 # IDE / Éditeur
 .idea/
@@ -35,3 +37,19 @@ build/
 *.env
 .env.*
 *.log
+
+
+# Fichiers temporaires Office (Word, Excel)
+~*.docx
+~*.doc
+~*.xlsx
+~*.xls
+~*.pptx
+~*.ppt
+~*.odt
+~*.odp
+~*.ods
+~*.odg
+~*.odf
+~*.tmp
+~*.csv
