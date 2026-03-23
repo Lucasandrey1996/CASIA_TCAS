@@ -5,6 +5,10 @@
 1_Documentation/2_Notes/
 2_Program/0_Data/0_Raw/ExportSST
 2_Program/0_Data/1_Structured/
+2_Program/0_Data/2_Cleaned/
+2_Program/0_Data/3_training/
+2_Program/0_Data/4_Validation/
+2_Program/0_Data/5_Test/
 
 # Environnement Python
 2_Program/.venv/
