@@ -9,6 +9,8 @@
 2_Program/0_Data/3_training/
 2_Program/0_Data/4_Validation/
 2_Program/0_Data/5_Test/
+2_Program/0_Data/6_Models/
+2_Program/0_Data/9_Results/
 
 # Environnement Python
 2_Program/.venv/
